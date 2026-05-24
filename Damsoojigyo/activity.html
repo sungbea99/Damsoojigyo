@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>활동 프로그램 신청 - 담수지교</title>
+  <meta name="description" content="담수지교의 다양한 5060 취미 모임과 네트워킹 프로그램을 확인하고 손쉽게 참여 신청하세요.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Activity Page Styling */
+    .filter-wrapper {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    
+    .filter-btn {
+      background-color: var(--white);
+      border: 1px solid var(--border-color);
+      padding: 10px 22px;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--text-dark);
+    }
+    
+    .filter-btn:hover, .filter-btn.active {
+      background-color: var(--main-terracotta);
+      border-color: var(--main-terracotta);
+      color: var(--white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .activity-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .activity-card {
+      background-color: var(--white);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .activity-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(42, 174, 232, 0.3);
+    }
+
+    .activity-img-wrap {
+      height: 220px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .activity-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .activity-card:hover .activity-img {
+      transform: scale(1.04);
+    }
+
+    .activity-tag {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background-color: rgba(21, 46, 62, 0.85);
+      color: var(--white);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 2;
+    }
+
+    .activity-status-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background-color: var(--main-blue);
+      color: var(--white);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 2;
+    }
+
+    .activity-status-badge.closing {
+      background-color: var(--main-terracotta);
+    }
+
+    .activity-body {
+      padding: 26px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .activity-title {
+      font-size: 19px;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .activity-details {
+      font-size: 14px;
+      color: var(--text-dark);
+      opacity: 0.85;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+      padding: 16px;
+      background-color: var(--bg-light);
+      border-radius: 12px;
+      border: 1px solid rgba(21, 46, 62, 0.05);
+    }
+
+    .activity-details span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .activity-footer {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(21, 46, 62, 0.08);
+      padding-top: 20px;
+    }
+
+    .activity-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--main-terracotta);
+    }
+
+    .reassurance-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 14px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 992px) {
+      .activity-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .activity-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container header-container">
+      <a href="index.html" class="logo-link">
+        <img src="image/담수지교_로고2.png" alt="담수지교 로고" class="logo-img">
+        <div class="brand-text">
+          <span class="brand-name">담수지교</span>
+          <span class="brand-subtext">취미로 깊어지는 담백한 사귐</span>
+        </div>
+      </a>
+      <nav>
+        <ul>
+          <li class="active"><a href="activity.html">활동</a></li>
+          <li><a href="record.html">기록</a></li>
+          <li><a href="community.html">커뮤니티</a></li>
+        </ul>
+      </nav>
+      <div class="welcome-msg">
+        <div class="welcome-dot"></div>
+        <span>반갑습니다, 미영 님 🍃</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- INTRO BANNER -->
+  <section class="section container" style="padding-bottom: 20px;">
+    <div class="section-title-wrap">
+      <span class="section-num">활동 큐레이션</span>
+      <h1 class="section-title" style="font-size: 32px; margin-bottom: 16px;">마음에 닿는 취미를 찾아서</h1>
+      <p class="section-subtitle">과시와 부담 없이, 같은 일상의 결을 가진 이웃들과 오손도손 걷고 나누는 시간입니다.</p>
+    </div>
+  </section>
+
+  <!-- FILTER & LIST -->
+  <section class="container" style="margin-bottom: 80px;">
+    <!-- Filters -->
+    <div class="filter-wrapper">
+      <button class="filter-btn active" data-filter="all">전체보기</button>
+      <button class="filter-btn" data-filter="walking">🚶 걷기/트레킹</button>
+      <button class="filter-btn" data-filter="travel">✈️ 여행/나들이</button>
+      <button class="filter-btn" data-filter="culture">🎭 공연/전시</button>
+      <button class="filter-btn" data-filter="tea">🍜 맛집/차회</button>
+      <button class="filter-btn" data-filter="book">📚 독서/취미</button>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="activity-grid" id="activityGrid">
+      
+      <!-- Card 1 -->
+      <div class="activity-card" data-category="walking">
+        <div class="activity-img-wrap">
+          <span class="activity-tag">🚶 걷기/트레킹</span>
+          <span class="activity-status-badge">모집중</span>
+          <img src="image/1.jpg" alt="숲 산책" class="activity-img">
+        </div>
+        <div class="activity-body">
+          <h3 class="activity-title">[초급] 초록으로 물든 서울 숲길 산책 & 다담(茶談)</h3>
+          <div class="activity-details">
+            <span>📅 일시: 5월 27일(수) 오전 10:00</span>
+            <span>📍 장소: 서울 숲 및 근처 한옥 찻집</span>
+            <span>👥 정원: 6명 소규모 (4명 완료, 남은 자리 2석)</span>
+            <span>🏃 활동 성격: 경사 없는 숲길 천천히 걷기 & 담소</span>
+          </div>
+          <div class="activity-footer">
+            <span class="activity-price">참가비 15,000원</span>
+            <button class="btn btn-accent apply-btn" data-title="[초급] 서울 숲길 산책 & 다담" data-fee="15,000원">신청하기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="activity-card" data-category="travel">
+        <div class="activity-img-wrap">
+          <span class="activity-tag" style="background-color: var(--main-terracotta);">✈️ 여행/나들이</span>
+          <span class="activity-status-badge closing">마감임박</span>
+          <img src="image/2.jpg" alt="영종도 바다" class="activity-img">
+        </div>
+        <div class="activity-body">
+          <h3 class="activity-title">[나들이] 영종도 해변 솔밭길 걷기 & 제철 해산물 맛 기행</h3>
+          <div class="activity-details">
+            <span>📅 일시: 5월 30일(토) 오전 09:30</span>
+            <span>📍 장소: 인천 영종도 (성동구청 앞 집결/카풀 지원)</span>
+            <span>👥 정원: 8명 소규모 (7명 완료, 남은 자리 1석)</span>
+            <span>🏃 활동 성격: 해안 솔밭 산책 & 서해 가을 대하 샤브샤브</span>
+          </div>
+          <div class="activity-footer">
+            <span class="activity-price">참가비 35,000원</span>
+            <button class="btn btn-accent apply-btn" data-title="영종도 해변 솔밭길 & 해산물 맛 기행" data-fee="35,000원">신청하기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="activity-card" data-category="culture">
+        <div class="activity-img-wrap">
+          <span class="activity-tag" style="background-color: #3a5f43;">🎭 공연/전시</span>
+          <span class="activity-status-badge">모집중</span>
+          <img src="image/3.jpg" alt="클래식홀" class="activity-img">
+        </div>
+        <div class="activity-body">
+          <h3 class="activity-title">[문화] 덕수궁 돌담길 야간 산책 & 클래식 살롱 정원 감상</h3>
+          <div class="activity-details">
+            <span>📅 일시: 6월 3일(수) 오후 18:30</span>
+            <span>📍 장소: 시청역 1번 출구 덕수궁 돌담길 앞</span>
+            <span>👥 정원: 6명 (3명 완료, 남은 자리 3석)</span>
+            <span>🏃 활동 성격: 노을 지는 돌담길 산책 & 실내 살롱 콘서트</span>
+          </div>
+          <div class="activity-footer">
+            <span class="activity-price">참가비 20,000원</span>
+            <button class="btn btn-accent apply-btn" data-title="덕수궁 돌담길 야간 산책 & 클래식 정원" data-fee="20,000원">신청하기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="activity-card" data-category="tea">
+        <div class="activity-img-wrap">
+          <span class="activity-tag" style="background-color: #4a90e2;">🍜 맛집/차회</span>
+          <span class="activity-status-badge">모집중</span>
+          <img src="image/4.jpg" alt="한옥 차실" class="activity-img">
+        </div>
+        <div class="activity-body">
+          <h3 class="activity-title">[다도] 북촌 한옥 마당에서 나누는 전통 다도 & 다정 대화</h3>
+          <div class="activity-details">
+            <span>📅 일시: 6월 6일(토) 오후 14:00</span>
+            <span>📍 장소: 북촌 한옥마을 예원재 한옥</span>
+            <span>👥 정원: 6명 소규모 (2명 완료, 남은 자리 4석)</span>
+            <span>🏃 활동 성격: 다도 명인에게 배우는 차 예절 & 대화</span>
+          </div>
+          <div class="activity-footer">
+            <span class="activity-price">참가비 25,000원</span>
+            <button class="btn btn-accent apply-btn" data-title="북촌 한옥 전통 다도 & 다정 대화" data-fee="25,000원">신청하기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="activity-card" data-category="book">
+        <div class="activity-img-wrap">
+          <span class="activity-tag" style="background-color: #7b8e8a;">📚 독서/취미</span>
+          <span class="activity-status-badge">모집중</span>
+          <img src="image/5.jpg" alt="책장 서가" class="activity-img">
+        </div>
+        <div class="activity-body">
+          <h3 class="activity-title">[독서] 인생의 책 한 줄 - 내 서재의 보석 같은 문장 나눔</h3>
+          <div class="activity-details">
+            <span>📅 일시: 6월 10일(수) 오후 15:00</span>
+            <span>📍 장소: 성수동 동네 책방 '머무는 서가'</span>
+            <span>👥 정원: 8명 소규모 (3명 완료, 남은 자리 5석)</span>
+            <span>🏃 활동 성격: 좋아하는 책 소개 & 맛있는 샌드위치 다과회</span>
+          </div>
+          <div class="activity-footer">
+            <span class="activity-price">참가비 12,000원</span>
+            <button class="btn btn-accent apply-btn" data-title="인생의 책 한 줄 문장 나눔" data-fee="12,000원">신청하기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="activity-card" data-category="book">
+        <div class="activity-img-wrap">
+          <span class="activity-tag" style="background-color: #7b8e8a;">📚 독서/취미</span>
+          <span class="activity-status-badge">모집중</span>
+          <img src="image/6.jpg" alt="한옥 풍경" class="activity-img">
+        </div>
+        <div class="activity-body">
+          <h3 class="activity-title">[사진] 내 스마트폰으로 예술 일상 담기 - 북촌 한옥마을 출사</h3>
+          <div class="activity-details">
+            <span>📅 일시: 6월 13일(토) 오전 10:00</span>
+            <span>📍 장소: 안국역 2번 출구 앞 집결</span>
+            <span>👥 정원: 6명 소규모 (2명 완료, 남은 자리 4석)</span>
+            <span>🏃 활동 성격: 폰 카메라 기본 꿀팁 학습 & 북촌 한옥 산책</span>
+          </div>
+          <div class="activity-footer">
+            <span class="activity-price">참가비 18,000원</span>
+            <button class="btn btn-accent apply-btn" data-title="스마트폰 예술 일상 북촌 출사" data-fee="18,000원">신청하기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="activity-card" data-category="tea">
+        <div class="activity-img-wrap">
+          <span class="activity-tag" style="background-color: #4a90e2;">🍜 맛집/차회</span>
+          <span class="activity-status-badge closing">마감임박</span>
+          <img src="image/7.jpg" alt="국수 음식" class="activity-img">
+        </div>
+        <div class="activity-body">
+          <h3 class="activity-title">[맛집] 종로 3대 노포 칼국수 기행 & 인사동 전통 찻집 수다</h3>
+          <div class="activity-details">
+            <span>📅 일시: 6월 17일(수) 낮 11:30</span>
+            <span>📍 장소: 종로3가역 6번 출구 앞</span>
+            <span>👥 정원: 6명 (5명 완료, 남은 자리 1석)</span>
+            <span>🏃 활동 성격: 깊은 맛의 노포 탐방 & 한식 디저트 담소</span>
+          </div>
+          <div class="activity-footer">
+            <span class="activity-price">참가비 15,000원</span>
+            <button class="btn btn-accent apply-btn" data-title="종로 노포 칼국수 기행 & 인사동 찻집" data-fee="15,000원">신청하기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="activity-card" data-category="travel">
+        <div class="activity-img-wrap">
+          <span class="activity-tag" style="background-color: var(--main-terracotta);">✈️ 여행/나들이</span>
+          <span class="activity-status-badge">모집중</span>
+          <img src="image/8.jpg" alt="소양강 댐" class="activity-img">
+        </div>
+        <div class="activity-body">
+          <h3 class="activity-title">[나들이] ITX 청춘열차 타고 떠나는 춘천 소양강 당일치기</h3>
+          <div class="activity-details">
+            <span>📅 일시: 6월 20일(토) 오전 08:30</span>
+            <span>📍 장소: 청량리역 3층 대합실 집결</span>
+            <span>👥 정원: 8명 소규모 (3명 완료, 남은 자리 5석)</span>
+            <span>🏃 활동 성격: 열차 여행 & 소양강 댐 걷기 & 닭갈비 오찬</span>
+          </div>
+          <div class="activity-footer">
+            <span class="activity-price">참가비 45,000원</span>
+            <button class="btn btn-accent apply-btn" data-title="춘천 소양강 당일치기 여행" data-fee="45,000원">신청하기</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- APPLY MODAL -->
+  <div class="modal" id="applyModal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeModal">&times;</span>
+      <h2 style="margin-bottom: 10px; font-size: 24px;" id="modalProgramTitle">모임 참여 신청</h2>
+      <p style="color: var(--main-terracotta); font-size: 15px; font-weight: 600; margin-bottom: 24px;" id="modalProgramFee">참가비: -</p>
+      
+      <form id="applyForm">
+        <div class="form-group">
+          <label for="userName">이름 (성함)</label>
+          <input type="text" id="userName" class="form-control" placeholder="성함을 입력해주세요 (예: 박미영)" required>
+        </div>
+        <div class="form-group">
+          <label for="userPhone">연락처 (휴대전화)</label>
+          <input type="tel" id="userPhone" class="form-control" placeholder="010-0000-0000" pattern="[0-9]{3}-[0-9]{3,4}-[0-9]{4}" required>
+        </div>
+        <div class="form-group">
+          <label for="userMessage">매니저에게 전할 말 (선택)</label>
+          <textarea id="userMessage" class="form-control" rows="3" placeholder="예: 첫 모임 참가인데 잘 부탁드립니다. 무릎이 안 좋은데 걷는 게 많이 힘든가요? 등"></textarea>
+        </div>
+        
+        <div style="background-color: var(--bg-tint); padding: 15px; border-radius: 12px; border: 1.5px dashed var(--main-blue); margin-bottom: 24px; font-size: 13.5px; color: var(--text-dark);">
+          🌱 <strong>안심 안내:</strong> 담수지교는 상업적 권유나 종교 포교, 가입 강요를 전면 금지합니다. 모임 시작 전 매니저가 연락처로 참가 확정 문자 및 상세 안내를 드립니다.
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">참여 신청 완료하기</button>
+        <p class="reassurance-note">신청 시 요금이 즉시 결제되지 않으며, 매니저 상담 후 확정됩니다.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="applyToast">
+    <div class="toast-icon">✓</div>
+    <div>
+      <h4 style="font-size: 15px; color: var(--white); font-family: var(--font-sans); margin-bottom: 2px;">신청 완료되었습니다.</h4>
+      <p style="font-size: 13px; color: rgba(255,255,255,0.85); margin: 0;">매니저가 오늘 중 다정하게 상세 문자를 보내드릴게요. 🍃</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-top">
+      <div class="footer-brand">
+        <h4>담수지교(淡水之交)</h4>
+        <p>물처럼 맑고 담백한 5060 중년들의 사귐</p>
+        <div class="footer-sns">
+          <a href="#" class="sns-btn">📷</a>
+          <a href="#" class="sns-btn">▶</a>
+          <a href="#" class="sns-btn">💬</a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h5>바로가기</h5>
+        <ul>
+          <li><a href="activity.html">취미 프로그램 신청</a></li>
+          <li><a href="record.html">활동 기록 및 후기</a></li>
+          <li><a href="community.html">커뮤니티 소통창구</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h5>고객 지원 및 문의</h5>
+        <p>📞 전화문의: 1544-0000 (평일 10:00 ~ 17:00)</p>
+        <p>✉️ 이메일: support@damsu.com</p>
+        <p>📍 주소: 서울시 성동구 아차산로 11길 12</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 담수지교. All rights reserved. 5060 중년 세대를 위한 건강한 소모임 플랫폼.</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT FOR FILTER & MODAL -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Filtering Logic
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const cards = document.querySelectorAll('.activity-card');
+      
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Remove active class from other buttons
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          const filterValue = btn.getAttribute('data-filter');
+          
+          cards.forEach(card => {
+            if (filterValue === 'all') {
+              card.style.display = 'flex';
+            } else {
+              const cardCat = card.getAttribute('data-category');
+              if (cardCat === filterValue) {
+                card.style.display = 'flex';
+              } else {
+                card.style.display = 'none';
+              }
+            }
+          });
+        });
+      });
+
+      // 2. Modal Logic
+      const modal = document.getElementById('applyModal');
+      const closeModal = document.getElementById('closeModal');
+      const applyBtns = document.querySelectorAll('.apply-btn');
+      const applyForm = document.getElementById('applyForm');
+      const toast = document.getElementById('applyToast');
+      
+      const modalTitle = document.getElementById('modalProgramTitle');
+      const modalFee = document.getElementById('modalProgramFee');
+
+      applyBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const title = btn.getAttribute('data-title');
+          const fee = btn.getAttribute('data-fee');
+          
+          modalTitle.textContent = title + ' 모임 신청';
+          modalFee.textContent = '참가 요금: ' + fee;
+          
+          // Open Modal
+          modal.classList.add('active');
+        });
+      });
+
+      closeModal.addEventListener('click', () => {
+        modal.classList.remove('active');
+      });
+
+      // Close modal on background click
+      window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+
+      // 3. Form Submit & Toast
+      applyForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Hide Modal
+        modal.classList.remove('active');
+        
+        // Reset Form
+        applyForm.reset();
+        
+        // Show Success Toast
+        toast.classList.add('show');
+        
+        // Hide Toast after 4.5 seconds
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 4500);
+      });
+    });
+  </script>
+</body>
+</html>

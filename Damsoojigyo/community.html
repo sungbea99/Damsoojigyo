@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>소통 커뮤니티 - 담수지교</title>
+  <meta name="description" content="독서, 걷기, 여행 등 다양한 취미 카테고리별 소모임 소통 창구에서 이웃들과 따뜻한 이야기를 나눠보세요.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Community Page CSS */
+    .community-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr 280px;
+      gap: 30px;
+      margin-top: 30px;
+      margin-bottom: 80px;
+    }
+
+    /* Left Sidebar: Categories */
+    .sidebar-categories {
+      background-color: var(--white);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+
+    .category-title {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .category-item {
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+    }
+
+    .category-item:hover, .category-item.active {
+      background-color: var(--bg-tint);
+      color: var(--main-blue);
+      font-weight: 700;
+    }
+
+    .category-item.active {
+      border-left: 4px solid var(--main-blue);
+      border-radius: 0 10px 10px 0;
+    }
+
+    /* Main Area: Feed & Writer */
+    .feed-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Writer */
+    .feed-writer {
+      background-color: var(--white);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .writer-title {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .writer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .writer-textarea {
+      width: 100%;
+      height: 100px;
+      resize: none;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border-color);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      margin-bottom: 15px;
+      transition: var(--transition);
+    }
+
+    .writer-textarea:focus {
+      outline: none;
+      border-color: var(--main-blue);
+    }
+
+    /* Post Card */
+    .post-card {
+      background-color: var(--white);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      padding: 28px;
+      transition: var(--transition);
+      animation: fadeIn 0.4s ease;
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .post-author-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .post-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--main-blue), var(--main-terracotta));
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-weight: 700;
+    }
+
+    .post-author-name {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .post-author-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .post-cat-tag {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background-color: var(--bg-light);
+      border: 1px solid var(--border-color);
+      color: var(--text-dark);
+      opacity: 0.8;
+    }
+
+    .post-title {
+      font-size: 18px;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .post-content {
+      font-size: 15.5px;
+      color: rgba(21, 46, 62, 0.9);
+      line-height: 1.8;
+      margin-bottom: 20px;
+      white-space: pre-line;
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 20px;
+      border-top: 1px solid rgba(21, 46, 62, 0.05);
+      border-bottom: 1px solid rgba(21, 46, 62, 0.05);
+      padding: 12px 0;
+      margin-bottom: 16px;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .action-btn:hover {
+      color: var(--main-blue);
+    }
+    
+    .action-btn.liked {
+      color: var(--main-terracotta);
+      font-weight: 700;
+    }
+
+    /* Comments Section */
+    .comments-section {
+      background-color: var(--bg-light);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .comment-item {
+      font-size: 14px;
+      line-height: 1.6;
+      border-bottom: 1px dashed rgba(21, 46, 62, 0.06);
+      padding-bottom: 8px;
+    }
+    
+    .comment-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .comment-author {
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-right: 8px;
+    }
+
+    .comment-input-wrap {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .comment-input {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      font-size: 13.5px;
+      font-family: var(--font-sans);
+    }
+
+    .comment-input:focus {
+      outline: none;
+      border-color: var(--main-blue);
+    }
+
+    .comment-submit-btn {
+      background-color: var(--text-dark);
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      padding: 0 16px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .comment-submit-btn:hover {
+      background-color: var(--main-terracotta);
+    }
+
+    /* Right Sidebar: Rules & Info */
+    .rules-sidebar {
+      background-color: var(--white);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+
+    .rule-title {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: var(--text-dark);
+    }
+
+    .rule-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    .rule-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .rule-bullet {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--bg-tint);
+      color: var(--main-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 10px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    @media (max-width: 1200px) {
+      .community-layout {
+        grid-template-columns: 200px 1fr;
+      }
+      .rules-sidebar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .community-layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar-categories {
+        position: static;
+      }
+      .category-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .category-item {
+        padding: 8px 12px;
+        font-size: 13.5px;
+      }
+      .category-item.active {
+        border-left: none;
+        border-bottom: 3px solid var(--main-blue);
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container header-container">
+      <a href="index.html" class="logo-link">
+        <img src="image/담수지교_로고2.png" alt="담수지교 로고" class="logo-img">
+        <div class="brand-text">
+          <span class="brand-name">담수지교</span>
+          <span class="brand-subtext">취미로 깊어지는 담백한 사귐</span>
+        </div>
+      </a>
+      <nav>
+        <ul>
+          <li><a href="activity.html">활동</a></li>
+          <li><a href="record.html">기록</a></li>
+          <li class="active"><a href="community.html">커뮤니티</a></li>
+        </ul>
+      </nav>
+      <div class="welcome-msg">
+        <div class="welcome-dot"></div>
+        <span>반갑습니다, 미영 님 🍃</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- COMMUNITY CONTAINER -->
+  <div class="container community-layout">
+    
+    <!-- Left: Categories -->
+    <div class="sidebar-categories">
+      <h3 class="category-title">소통 공간</h3>
+      <div class="category-list">
+        <div class="category-item active" data-cat="all">🌱 전체 글보기</div>
+        <div class="category-item" data-cat="photo">📸 나들이 사진첩</div>
+        <div class="category-item" data-cat="travel">✈️ 여행 정보방</div>
+        <div class="category-item" data-cat="book">📚 오늘 한 줄</div>
+        <div class="category-item" data-cat="chat">💬 따뜻한 수다방</div>
+      </div>
+    </div>
+
+    <!-- Middle: Feed and Writer -->
+    <div class="feed-container">
+      
+      <!-- Feed Writer -->
+      <div class="feed-writer">
+        <h4 class="writer-title">🍃 오늘의 따뜻한 온기 나누기</h4>
+        <form id="postForm">
+          <div class="writer-grid">
+            <input type="text" id="postAuthorName" class="form-control" placeholder="성함 (예: 박미영)" required>
+            <select id="postCategory" class="form-control" required>
+              <option value="" disabled selected>글을 올릴 카테고리 선택</option>
+              <option value="photo">📸 나들이 사진첩</option>
+              <option value="travel">✈️ 여행 정보방</option>
+              <option value="book">📚 오늘 한 줄</option>
+              <option value="chat">💬 따뜻한 수다방</option>
+            </select>
+          </div>
+          <input type="text" id="postTitleInput" class="form-control" placeholder="제목을 적어주세요" style="margin-bottom: 15px;" required>
+          <textarea id="postContentInput" class="writer-textarea" placeholder="이웃들과 나누고 싶은 따뜻한 이야기나 안부를 남겨보세요. 비방이나 광고글은 필터링됩니다." required></textarea>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12.5px; color: var(--muted);">✍️ 서로를 존중하는 다정한 글을 환영합니다.</span>
+            <button type="submit" class="btn btn-primary" style="padding: 10px 24px;">글 올리기</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Feed Stream -->
+      <div class="feed-stream" id="feedStream">
+        
+        <!-- Post 1 (Photo) -->
+        <div class="post-card" data-category="photo">
+          <div class="post-header">
+            <div class="post-author-info">
+              <div class="post-avatar">김</div>
+              <div>
+                <div class="post-author-name">김태준 회원님</div>
+                <div class="post-author-meta">61세 · 광진구 · 3시간 전</div>
+              </div>
+            </div>
+            <span class="post-cat-tag">📸 나들이 사진첩</span>
+          </div>
+          <h3 class="post-title">오늘 아침 뒷산 등산로에서 마주친 불두화입니다.</h3>
+          <p class="post-content">출근길... 아니 이제 퇴근길도 없네요 하하.
+아침 숲길 가벼운 산책 코스를 오르다가 하얗게 탐스럽게 핀 불두화가 너무 고와 공유합니다. 
+동네 꽃 하나도 이렇게 눈길이 가고 마음을 채워주는 걸 보니, 인생의 속도가 늦춰지긴 했나 봅니다.
+다들 상쾌하고 맑은 하루 시작하세요.</p>
+          <div class="post-actions">
+            <button class="action-btn like-btn" data-count="12">
+              <span class="heart-icon">🤍</span> 공감해요 <span class="like-count">12</span>
+            </button>
+            <button class="action-btn comment-toggle-btn">
+              💬 댓글보기 (<span class="comment-count">2</span>)
+            </button>
+          </div>
+          
+          <div class="comments-section">
+            <div class="comment-list">
+              <div class="comment-item">
+                <span class="comment-author">정혜원</span>와, 수국인 줄 알았는데 불두화군요. 소담하게 피었네요. 덕분에 기분 좋게 오늘 하루를 엽니다!
+              </div>
+              <div class="comment-item">
+                <span class="comment-author">박미영</span>아침 숲 향기가 전해지는 것 같습니다. 사진 정말 예쁘게 찍으셨네요.
+              </div>
+            </div>
+            <form class="comment-form">
+              <div class="comment-input-wrap">
+                <input type="text" class="comment-input" placeholder="다정한 댓글을 달아주세요..." required>
+                <button type="submit" class="comment-submit-btn">등록</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Post 2 (Book) -->
+        <div class="post-card" data-category="book">
+          <div class="post-header">
+            <div class="post-author-info">
+              <div class="post-avatar">박</div>
+              <div>
+                <div class="post-author-name">박미영 회원님</div>
+                <div class="post-author-meta">59세 · 성동구 · 어제</div>
+              </div>
+            </div>
+            <span class="post-cat-tag">📚 오늘 한 줄</span>
+          </div>
+          <h3 class="post-title">이해인 수녀님의 '시를 읽는 기쁨' 글귀를 필사해 봅니다.</h3>
+          <p class="post-content">"마음이 답답할 때 시를 읽으면 마음의 밭에 맑은 우물이 괸다."
+
+최근 은퇴 후 삶의 방향에 대해 고민도 많고 매사 답답했었는데, 우연히 책장에서 먼지 쌓인 시집을 꺼내어 필사해 보았습니다. 
+말씀대로 내 마음의 마른 밭에 조그만 맑은 웅덩이 하나가 생긴 것 같아 참 위안이 되더군요. 
+우리 담수지교 이웃분들과도 이 잔잔한 평온을 나누고 싶습니다.</p>
+          <div class="post-actions">
+            <button class="action-btn like-btn" data-count="15">
+              <span class="heart-icon">🤍</span> 공감해요 <span class="like-count">15</span>
+            </button>
+            <button class="action-btn comment-toggle-btn">
+              💬 댓글보기 (<span class="comment-count">2</span>)
+            </button>
+          </div>
+          
+          <div class="comments-section">
+            <div class="comment-list">
+              <div class="comment-item">
+                <span class="comment-author">정혜원</span>이해인 수녀님의 시는 늘 소박하면서도 마음에 우물처럼 번지는 깊은 힘이 있네요. 좋은 필사 나눔 고맙습니다.
+              </div>
+              <div class="comment-item">
+                <span class="comment-author">이종철</span>'마음의 밭에 맑은 우물'... 참 근사한 말입니다. 저도 오늘 밤엔 시집 한 권 들쳐보아야겠네요.
+              </div>
+            </div>
+            <form class="comment-form">
+              <div class="comment-input-wrap">
+                <input type="text" class="comment-input" placeholder="다정한 댓글을 달아주세요..." required>
+                <button type="submit" class="comment-submit-btn">등록</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Post 3 (Travel) -->
+        <div class="post-card" data-category="travel">
+          <div class="post-header">
+            <div class="post-author-info">
+              <div class="post-avatar">정</div>
+              <div>
+                <div class="post-author-name">정혜원 회원님</div>
+                <div class="post-author-meta">56세 · 송파구 · 3일 전</div>
+              </div>
+            </div>
+            <span class="post-cat-tag">✈️ 여행 정보방</span>
+          </div>
+          <h3 class="post-title">6월 초 가평 자라섬 '백일홍&양귀비' 꽃 페스티벌 다녀오실 분 계실까요?</h3>
+          <p class="post-content">벌써 6월이 코앞이네요. 가평 자라섬 남도 부근에서 대규모 꽃 페스티벌이 열린다고 합니다. 
+경춘선 ITX 청춘열차를 이용하면 가평역까지 1시간도 채 걸리지 않아 당일치기로 꽃 구경하고 닭갈비 오찬까지 함께하기 아주 좋습니다.
+혹시 다음 달 첫 주말에 가볍게 기차 타고 다녀올 4~6명 정도 소모임 번개를 치면 동참하실 분들이 계실까요? 의견 남겨주세요.</p>
+          <div class="post-actions">
+            <button class="action-btn like-btn" data-count="8">
+              <span class="heart-icon">🤍</span> 공감해요 <span class="like-count">8</span>
+            </button>
+            <button class="action-btn comment-toggle-btn">
+              💬 댓글보기 (<span class="comment-count">2</span>)
+            </button>
+          </div>
+          
+          <div class="comments-section">
+            <div class="comment-list">
+              <div class="comment-item">
+                <span class="comment-author">박미영</span>자라섬 정말 가보고 싶었던 곳이네요. 저는 날짜만 주말이면 꼭 동참하고 싶어요!
+              </div>
+              <div class="comment-item">
+                <span class="comment-author">김태준</span>아주 즐거운 기차 소풍이 되겠네요. 꽃 구경도 좋고 노포 닭갈비 기행도 대환영입니다.
+              </div>
+            </div>
+            <form class="comment-form">
+              <div class="comment-input-wrap">
+                <input type="text" class="comment-input" placeholder="다정한 댓글을 달아주세요..." required>
+                <button type="submit" class="comment-submit-btn">등록</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Post 4 (Chat) -->
+        <div class="post-card" data-category="chat">
+          <div class="post-header">
+            <div class="post-author-info">
+              <div class="post-avatar">이</div>
+              <div>
+                <div class="post-author-name">이정우 회원님</div>
+                <div class="post-author-meta">57세 · 은퇴 6개월차 · 4일 전</div>
+              </div>
+            </div>
+            <span class="post-cat-tag">💬 따뜻한 수다방</span>
+          </div>
+          <h3 class="post-title">가입하고 매일 눈팅만 하다가 큰 용기 내어 인사 글 올립니다.</h3>
+          <p class="post-content">작년 연말 30년 넘게 다닌 직장을 정리하고 집에만 머무르다 보니 세상과 영영 끊어진 것 같은 묘한 고립감이 오더군요. 
+우연히 자녀가 이곳을 알려주어 가입해놓고, 쭈뼛거리며 2주째 다른 분들이 걷고 소소하게 차 마시는 엽서(후기)들을 훔쳐보기만 했습니다. 
+오늘 문득 '나도 새로운 문을 두드려봐야겠다'는 결심이 들어 용기 내어 몇 자 남깁니다. 
+부담 없이 취미로만 만나 소탈하게 늙어갈 수 있는 다정한 동반자를 만나고 싶네요. 반갑습니다.</p>
+          <div class="post-actions">
+            <button class="action-btn like-btn" data-count="24">
+              <span class="heart-icon">🤍</span> 공감해요 <span class="like-count">24</span>
+            </button>
+            <button class="action-btn comment-toggle-btn">
+              💬 댓글보기 (<span class="comment-count">2</span>)
+            </button>
+          </div>
+          
+          <div class="comments-section">
+            <div class="comment-list">
+              <div class="comment-item">
+                <span class="comment-author">김태준</span>환영합니다 이정우 님! 저도 은퇴 후 똑같은 마음이었습니다. 용기 내어 걷기 모임 한 번 나오시면, '왜 더 빨리 안 나왔나' 싶을 정도로 편안한 분들이 맞이해 줄 겁니다.
+              </div>
+              <div class="comment-item">
+                <span class="comment-author">정혜원</span>어서 오세요 정우 님. 이곳은 서로 비교하거나 조건 묻지 않고 온전히 나로 머무를 수 있는 대숲 같은 곳입니다. 편히 쉬며 소통하세요.
+              </div>
+            </div>
+            <form class="comment-form">
+              <div class="comment-input-wrap">
+                <input type="text" class="comment-input" placeholder="다정한 댓글을 달아주세요..." required>
+                <button type="submit" class="comment-submit-btn">등록</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Right Sidebar: Rules -->
+    <div class="rules-sidebar">
+      <h3 class="rule-title">소통 약속</h3>
+      <div class="rule-list">
+        <div class="rule-item">
+          <div class="rule-bullet">1</div>
+          <p><strong>서로 존칭 사용하기</strong><br>나이 고하를 막론하고 서로에게 'OO 님' 혹은 '회원님'이라 부르며 경어를 씁니다.</p>
+        </div>
+        <div class="rule-item">
+          <div class="rule-bullet">2</div>
+          <p><strong>조건/스펙 묻지 않기</strong><br>과거 직장, 재산, 아파트 평수 등 자존심의 원인이 될 수 있는 조건들은 묻지도 대답하지도 않습니다.</p>
+        </div>
+        <div class="rule-item">
+          <div class="rule-bullet">3</div>
+          <p><strong>따뜻하고 긍정적인 말</strong><br>타인을 헐뜯거나 정치/종교 등 격론을 유발하는 논쟁 글은 매니저에 의해 숨김 조치될 수 있습니다.</p>
+        </div>
+        <div class="rule-item">
+          <div class="rule-bullet">4</div>
+          <p><strong>상업성 광고글 금지</strong><br>공동체의 온기를 해치는 어떠한 상업적 광고나 포교, 보험 권유는 적발 즉시 강제 퇴장 조치됩니다.</p>
+        </div>
+      </div>
+      
+      <div style="background-color: var(--bg-light); border: 1.5px dashed var(--border-color); border-radius: 12px; padding: 16px; margin-top: 24px; font-size: 13px; text-align: center;">
+        💬 <strong>불편 신고 센터</strong><br>소통 중 눈살이 찌푸려지는 불편함이 계셨다면 매니저(1544-0000)로 상시 폰으로 소통해 주십시오. 
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="postToast">
+    <div class="toast-icon">✓</div>
+    <div>
+      <h4 style="font-size: 15px; color: var(--white); font-family: var(--font-sans); margin-bottom: 2px;">이야기가 공유되었습니다.</h4>
+      <p style="font-size: 13px; color: rgba(255,255,255,0.85); margin: 0;">남겨주신 따뜻한 대화가 게시판 전체 목록에 추가되었습니다. 🍃</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-top">
+      <div class="footer-brand">
+        <h4>담수지교(淡水之交)</h4>
+        <p>물처럼 맑고 담백한 5060 중년들의 사귐</p>
+        <div class="footer-sns">
+          <a href="#" class="sns-btn">📷</a>
+          <a href="#" class="sns-btn">▶</a>
+          <a href="#" class="sns-btn">💬</a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h5>바로가기</h5>
+        <ul>
+          <li><a href="activity.html">취미 프로그램 신청</a></li>
+          <li><a href="record.html">활동 기록 및 후기</a></li>
+          <li><a href="community.html">커뮤니티 소통창구</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h5>고객 지원 및 문의</h5>
+        <p>📞 전화문의: 1544-0000 (평일 10:00 ~ 17:00)</p>
+        <p>✉️ 이메일: support@damsu.com</p>
+        <p>📍 주소: 서울시 성동구 아차산로 11길 12</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 담수지교. All rights reserved. 5060 중년 세대를 위한 건강한 소모임 플랫폼.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const categoryItems = document.querySelectorAll('.category-item');
+      const posts = document.querySelectorAll('.post-card');
+      
+      // 1. Filter Posts by Category Tab
+      categoryItems.forEach(item => {
+        item.addEventListener('click', () => {
+          categoryItems.forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          
+          const cat = item.getAttribute('data-cat');
+          
+          posts.forEach(post => {
+            if (cat === 'all') {
+              post.style.display = 'block';
+            } else {
+              const postCat = post.getAttribute('data-category');
+              if (postCat === cat) {
+                post.style.display = 'block';
+              } else {
+                post.style.display = 'none';
+              }
+            }
+          });
+        });
+      });
+
+      // 2. Like Button Action (Toggle state & Increment count)
+      const setupLikeButtons = (btn) => {
+        btn.addEventListener('click', () => {
+          const heart = btn.querySelector('.heart-icon');
+          const countSpan = btn.querySelector('.like-count');
+          let count = parseInt(btn.getAttribute('data-count'));
+          
+          if (btn.classList.contains('liked')) {
+            btn.classList.remove('liked');
+            heart.textContent = '🤍';
+            count--;
+          } else {
+            btn.classList.add('liked');
+            heart.textContent = '❤️';
+            count++;
+          }
+          btn.setAttribute('data-count', count);
+          countSpan.textContent = count;
+        });
+      };
+      
+      document.querySelectorAll('.like-btn').forEach(setupLikeButtons);
+
+      // 3. Comment Toggle Action
+      const setupCommentToggles = (btn) => {
+        btn.addEventListener('click', () => {
+          const card = btn.closest('.post-card');
+          const commentSection = card.querySelector('.comments-section');
+          if (commentSection.style.display === 'none' || commentSection.style.display === '') {
+            commentSection.style.display = 'flex';
+          } else {
+            commentSection.style.display = 'none';
+          }
+        });
+      };
+      
+      document.querySelectorAll('.comment-toggle-btn').forEach(setupCommentToggles);
+
+      // 4. Add Comment Action
+      const setupCommentForms = (form) => {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = form.querySelector('.comment-input');
+          const value = input.value.trim();
+          if (!value) return;
+
+          const card = form.closest('.post-card');
+          const list = card.querySelector('.comment-list');
+          const countSpan = card.querySelector('.comment-count');
+          
+          // Create new comment element
+          const item = document.createElement('div');
+          item.className = 'comment-item';
+          item.innerHTML = `<span class="comment-author">박미영 (나)</span>${value}`;
+          list.appendChild(item);
+          
+          // Update count
+          let count = parseInt(countSpan.textContent);
+          count++;
+          countSpan.textContent = count;
+          
+          // Reset input
+          input.value = '';
+        });
+      };
+
+      document.querySelectorAll('.comment-form').forEach(setupCommentForms);
+
+      // 5. Post Creator Action
+      const postForm = document.getElementById('postForm');
+      const feedStream = document.getElementById('feedStream');
+      const toast = document.getElementById('postToast');
+
+      postForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const author = document.getElementById('postAuthorName').value.trim();
+        const category = document.getElementById('postCategory').value;
+        const title = document.getElementById('postTitleInput').value.trim();
+        const content = document.getElementById('postContentInput').value.trim();
+        
+        if (!author || !category || !title || !content) return;
+
+        // Map category codes to readable tags
+        const categoryNames = {
+          photo: '📸 나들이 사진첩',
+          travel: '✈️ 여행 정보방',
+          book: '📚 오늘 한 줄',
+          chat: '💬 따뜻한 수다방'
+        };
+
+        const postElement = document.createElement('div');
+        postElement.className = 'post-card';
+        postElement.setAttribute('data-category', category);
+        postElement.style.border = '1.5px solid var(--main-blue)'; // Highlight the new post
+        
+        postElement.innerHTML = `
+          <div class="post-header">
+            <div class="post-author-info">
+              <div class="post-avatar">${author.substring(0,1)}</div>
+              <div>
+                <div class="post-author-name">${author} 회원님</div>
+                <div class="post-author-meta">5060 특별회원 · 방금 전</div>
+              </div>
+            </div>
+            <span class="post-cat-tag">${categoryNames[category]}</span>
+          </div>
+          <h3 class="post-title">${title}</h3>
+          <p class="post-content">${content}</p>
+          <div class="post-actions">
+            <button class="action-btn like-btn" data-count="0">
+              <span class="heart-icon">🤍</span> 공감해요 <span class="like-count">0</span>
+            </button>
+            <button class="action-btn comment-toggle-btn">
+              💬 댓글보기 (<span class="comment-count">0</span>)
+            </button>
+          </div>
+          <div class="comments-section" style="display: none;">
+            <div class="comment-list"></div>
+            <form class="comment-form">
+              <div class="comment-input-wrap">
+                <input type="text" class="comment-input" placeholder="다정한 댓글을 달아주세요..." required>
+                <button type="submit" class="comment-submit-btn">등록</button>
+              </div>
+            </form>
+          </div>
+        `;
+        
+        // Prepend new post
+        feedStream.insertBefore(postElement, feedStream.firstChild);
+        
+        // Setup triggers for the newly created post
+        setupLikeButtons(postElement.querySelector('.like-btn'));
+        setupCommentToggles(postElement.querySelector('.comment-toggle-btn'));
+        setupCommentForms(postElement.querySelector('.comment-form'));
+
+        // Reset form
+        postForm.reset();
+
+        // Scroll to the new post
+        postElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Show Toast
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 4500);
+      });
+    });
+  </script>
+</body>
+</html>
